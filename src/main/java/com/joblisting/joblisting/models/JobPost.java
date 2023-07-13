@@ -1,17 +1,21 @@
 package com.joblisting.joblisting.models;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Arrays;
 
 @Document(collection = "JobPost")
 public class JobPost {
+    @Id
+    private String id;
     private String profile;
     private String desc;
     private int exp;
     private String techs[];
 
-    public JobPost(String profile, String desc, int exp, String[] techs) {
+    public JobPost(String id, String profile, String desc, int exp, String[] techs) {
+        this.id = id;
         this.profile = profile;
         this.desc = desc;
         this.exp = exp;
@@ -20,6 +24,14 @@ public class JobPost {
 
     public JobPost() {
         super();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getProfile() {
