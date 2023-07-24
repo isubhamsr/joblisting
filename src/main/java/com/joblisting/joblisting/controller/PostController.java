@@ -31,18 +31,26 @@ public class PostController {
 
     @GetMapping("/posts")
     public Dictionary getAllPost() {
-        var jobs = post.getAllPost();
-        if(jobs.isEmpty()){
-            response.put("status", HttpStatus.NOT_FOUND.value());
+        try{
+            var jobs = post.getAllPost();
+            if(jobs.isEmpty()){
+                response.put("status", HttpStatus.NOT_FOUND.value());
+                response.put("error", true);
+                response.put("message", "Jobs not found");
+                return response;
+            }
+            response.put("status", HttpStatus.OK.value());
+            response.put("error", false);
+            response.put("message", "Jobs found");
+            response.put("data", post.getAllPost());
+            return response;
+        }catch (Exception e){
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
             response.put("error", true);
-            response.put("message", "Jobs not found");
+            response.put("message", e.getMessage());
             return response;
         }
-        response.put("status", HttpStatus.OK.value());
-        response.put("error", false);
-        response.put("message", "Jobs found");
-        response.put("data", post.getAllPost());
-        return response;
+
     }
     @PostMapping("/post")
     public JobPost addPost(@RequestBody JobPost post){

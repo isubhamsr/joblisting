@@ -14,10 +14,15 @@ public class JobPostService implements IJobPostService{
     JobPostRepository repo;
     @Override
     public List<JobPost> getAllPost() {
-        List<JobPost> jobs = repo.findAll();
-        if(jobs.isEmpty()){
+        try{
+            List<JobPost> jobs = repo.findAll();
+            if(jobs.isEmpty()){
+                return jobs;
+            }
             return jobs;
+        }catch (Exception e){
+            throw new RuntimeException(e);
         }
-        return jobs;
+
     }
 }
