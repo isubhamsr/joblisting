@@ -21,7 +21,7 @@ public class PostController {
     @Autowired
     JobPostRepository repo;
     @Autowired
-    JobPostService post;
+    JobPostService jobPost;
 
     Dictionary<String, Object> response= new Hashtable<>();
     @GetMapping("/")
@@ -32,7 +32,7 @@ public class PostController {
     @GetMapping("/posts")
     public Dictionary getAllPost() {
         try{
-            var jobs = post.getAllPost();
+            var jobs = jobPost.getAllPost();
             if(jobs.isEmpty()){
                 response.put("status", HttpStatus.NOT_FOUND.value());
                 response.put("error", true);
@@ -42,7 +42,7 @@ public class PostController {
             response.put("status", HttpStatus.OK.value());
             response.put("error", false);
             response.put("message", "Jobs found");
-            response.put("data", post.getAllPost());
+            response.put("data", jobs);
             return response;
         }catch (Exception e){
             response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
@@ -53,7 +53,28 @@ public class PostController {
 
     }
     @PostMapping("/post")
-    public JobPost addPost(@RequestBody JobPost post){
-       return repo.save(post);
+    public Dictionary addPost(@RequestBody JobPost post){
+        try{
+            if(post.getProfile() != "" &&
+                    post.getExp() >= 0  &&
+                        post.getTechs().length != 0 && post.getDesc() != ""){
+                var savePost = jobPost.savePost(post);
+                response.put("status", HttpStatus.CREATED.value());
+                response.put("error", false);
+                response.put("message", "Job posted");
+                response.put("data", savePost);
+
+                return response;
+            }
+            response.put("status", HttpStatus.BAD_REQUEST.value());
+            response.put("error", true);
+            response.put("message", "All fields are mandatory");
+            return response;
+        }catch (Exception e){
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.put("error", true);
+            response.put("message", e.getMessage());
+            return response;
+        }
     }
 }
