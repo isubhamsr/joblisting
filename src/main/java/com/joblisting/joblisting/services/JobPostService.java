@@ -43,6 +43,19 @@ public class JobPostService implements IJobPostService{
     }
 
     @Override
+    public Optional<JobPost> getPost(String id) {
+        try{
+            var post = repo.findById(id);
+            if(post.isEmpty()){
+                return post;
+            }
+            return post;
+        }catch (Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @Override
     public List<JobPost> updatePost(JobPost post) {
         try{
             List<JobPost> jobs = new ArrayList<>();
@@ -60,6 +73,21 @@ public class JobPostService implements IJobPostService{
 
             jobs.add(repo.save(_jobPost));
             return jobs;
+        }catch (Exception e){
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @Override
+    public boolean deletePost(String id) {
+        try{
+            var post = repo.findById(id);
+            if(post.isEmpty()){
+                return false;
+            }
+
+            repo.deleteById(id);
+            return true;
         }catch (Exception e){
             throw new RuntimeException(e.getMessage());
         }

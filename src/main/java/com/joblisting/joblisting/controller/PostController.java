@@ -114,4 +114,56 @@ public class PostController {
             return response;
         }
     }
+
+    @DeleteMapping("/post/{id}")
+    @CrossOrigin
+    public Dictionary deletePost(@PathVariable String id){
+        try{
+            boolean deletedPost = jobPost.deletePost(id);
+            if (deletedPost){
+                response.put("status", HttpStatus.OK.value());
+                response.put("error", false);
+                response.put("message", "Job Deleted");
+
+                return response;
+            }
+            response.put("status", HttpStatus.NOT_FOUND.value());
+            response.put("error", true);
+            response.put("message", "Job not Deleted");
+            return response;
+        }catch (Exception e){
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.put("error", true);
+            response.put("message", e.getMessage());
+            return response;
+        }
+    }
+
+    @GetMapping("/post/{id}")
+    @CrossOrigin
+    public Dictionary getPost(@PathVariable String id){
+        try {
+            var post = jobPost.getPost(id);
+
+            if(post.isEmpty()){
+                response.put("status", HttpStatus.NOT_FOUND.value());
+                response.put("error", true);
+                response.put("message", "Job not Found");
+
+                return response;
+            }
+
+            response.put("status", HttpStatus.OK.value());
+            response.put("error", false);
+            response.put("message", "Job Fetched");
+            response.put("data", post);
+
+            return response;
+        }catch (Exception e){
+            response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.put("error", true);
+            response.put("message", e.getMessage());
+            return response;
+        }
+    }
 }
